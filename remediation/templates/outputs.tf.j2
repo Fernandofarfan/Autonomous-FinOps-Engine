@@ -1,0 +1,22 @@
+# ============================================================
+# Outputs: Recursos Ociosos Detectados para Remediación
+# Generado por el Autonomous FinOps Engine
+# ============================================================
+
+{% for resource in resources %}
+output "idle_resource_{{ loop.index }}" {
+  description = "{{ resource.reason }} | Costo estimado: ${{ '%.2f'|format(resource.estimated_monthly_cost_usd) }}/mes"
+  value       = "{{ resource.type }}/{{ resource.id }} ({{ resource.location }})"
+}
+
+{% endfor %}
+
+output "total_idle_resources" {
+  description = "Total de recursos ociosos detectados en este análisis"
+  value       = {{ resources | length }}
+}
+
+output "total_estimated_monthly_waste_usd" {
+  description = "Costo mensual total estimado de los recursos ociosos detectados"
+  value       = "{{ resources | sum(attribute='estimated_monthly_cost_usd') | round(2) }} USD/mes"
+}
